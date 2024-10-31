@@ -879,16 +879,17 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'overcache/NeoSolarized',
+    'srcery-colors/srcery-vim',
     priority = 1000,
     config = function()
-      vim.g.neosolarized_bold = 1
-      vim.g.neosolarized_underline = 1
-      vim.g.neosolarized_italic = 1
-      vim.opt.background = 'dark'
       vim.opt.termguicolors = true
+      -- vim.g.neosolarized_bold = 1
+      -- vim.g.neosolarized_underline = 1
+      -- vim.g.neosolarized_italic = 1
+      -- vim.opt.background = 'dark'
+      -- vim.opt.termguicolors = true
 
-      vim.cmd.colorscheme 'NeoSolarized'
+      vim.cmd.colorscheme 'srcery'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
