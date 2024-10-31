@@ -1,8 +1,13 @@
 *
-
 !nvim/
 !alacritty/
 !fish/
 !kitty/
+
+!nvim/**
+!alacritty/**
+!fish/**
+!kitty/**
+
 !/.tmux.conf
 !/.gitignore
