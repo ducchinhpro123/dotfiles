@@ -3,6 +3,7 @@
 !alacritty/
 !fish/
 !kitty/
+!i3/
 
 !nvim/**
 !alacritty/**
