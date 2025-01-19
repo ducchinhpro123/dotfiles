@@ -159,19 +159,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " set background=dark                    " Set dark background
 colorscheme pop-punk                   " Set colorscheme
 
-" highlight CocErrorHighlight ctermfg=Red guifg=#ff0000
-highlight CocErrorHighlight ctermbg=Red guibg=#FF0000 ctermfg=White guifg=#ffffff
 
-" highlight cocwarninghighlight ctermfg=Black guifg=#000000 
-highlight cocwarninghighlight ctermbg=Yellow guibg=#ffcc00 ctermfg=White guifg=#000000
-
-highlight CocInfoHighlight ctermfg=Blue guifg=#0000ff
-highlight CocHintHighlight ctermfg=Blue guifg=#0000ff
-
-" highlight Normal ctermbg=235 guibg=#101010
-" highlight LineNr       guifg=#666666 guibg=#110022 ctermfg=242 ctermbg=234
-" highlight CursorLineNr guifg=#FFFFFF guibg=#1F1F1F ctermfg=231 ctermbg=234
-" highlight SignColumn   guibg=#110022 ctermbg=234
+highlight CocWarningHighlight ctermbg=Black guibg=#000000 ctermfg=DarkGray guifg=#808080
+highlight CocErrorHighlight ctermfg=White guifg=#ffffff ctermbg=Red guibg=#ff0000
 
 " Enable highlighting color code
 autocmd CursorHold * silent call CocActionAsync('highlight')
