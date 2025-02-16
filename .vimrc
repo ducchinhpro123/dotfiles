@@ -2,13 +2,12 @@
 call plug#begin('~/.vim/plugged')
 
 " Essential plugins
-Plug 'preservim/nerdtree'               " File explorer
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'preservim/nerdcommenter'          " Extended commenting
 Plug 'jiangmiao/auto-pairs'             " Auto close brackets
 
 Plug 'tpope/vim-sensible'               " Sensible defaults
-Plug 'tpope/vim-commentary'             " Easy commenting
-Plug 'tpope/vim-sleuth'                 " Extended commenting
+Plug 'tpope/vim-commentary'
 
 " Vim jsx
 Plug 'mxw/vim-jsx'
@@ -26,8 +25,7 @@ Plug 'liuchengxu/vim-which-key'
 
 Plug 'airblade/vim-gitgutter'
 
-" Plug 'ycm-core/YouCompleteMe'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release', 'do': 'yarn install --frozen-lockfile' }
 
 " Dart development
 Plug 'dart-lang/dart-vim-plugin'
@@ -44,29 +42,22 @@ Plug 'alvan/vim-closetag'
 
 Plug 'sbdchd/neoformat'
 
-Plug 'fenetikm/falcon'
-Plug 'bignimbus/pop-punk.vim'
+Plug 'alligator/accent.vim'
+
+Plug 'sstallion/vim-wtf'
+Plug 'KevinGoodsell/vim-xterm-colors'
 
 " Initialize plugin system
 call plug#end()
 
 runtime! plugins/*.vim
 
-" let g:ycm_language_server = [
-"   \   {
-"   \     'name': 'dart',
-"   \     'cmdline': [ 'dart', 'language-server', '--protocol=lsp' ],
-"   \     'filetypes': [ 'dart' ],
-"   \   }
-"   \ ]
-
-
 " Neoformat format for languages
-let g:neoformat_enabled_python = ['black', 'autopep8']
-let g:neoformat_enabled_javascript = ['prettier']
-let g:neoformat_enabled_typescript = ['prettier']
+let g:neoformat_enabled_python = ['black', 'autopep8', 'yapf']
+let g:neoformat_enabled_javascript = ['prettier', 'eslint']
+let g:neoformat_enabled_typescript = ['prettier', 'eslint']
+let g:neoformat_enabled_html = ['prettier', 'js-beautify']
 let g:neoformat_enabled_css = ['prettier']
-let g:neoformat_enabled_html = ['prettier']
 
 nnoremap <silent> <space>cf :Neoformat<CR>
 vnoremap <silent> <space>cf :Neoformat<CR>
@@ -122,7 +113,7 @@ filetype plugin indent on
 set mouse=v
 set number                             " Show line numbers
 set relativenumber                     " Show relative line numbers
-autocmd BufReadPost,BufNewFile * set nowrap
+" autocmd BufReadPost,BufNewFile * set nowrap
 set nobackup
 set autoread
 set nowb
@@ -146,25 +137,31 @@ set mouse=a                           " Enable mouse support
 set clipboard=unnamedplus             " Use system clipboard
 " vnoremap <leader>y "+y
 set nowritebackup
-set updatetime=300
+set updatetime=100
 set signcolumn=no
 set guiheadroom=0
 set termguicolors
+syntax on
 
-autocmd FileType java setlocal shiftwidth=4 tabstop=4 expandtab
-autocmd CursorHold * silent call CocActionAsync('highlight')
-" autocmd FileType js setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env', '.venv']
+autocmd FileType java setlocal shiftwidth=2 tabstop=2 expandtab
+
+" autocmd FileType ts, tsx setlocal shiftwidth=2 tabstop=2 expandtab
+" autocmd FileType javascript,typescript setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType javascript,typescript,typescriptreact setlocal shiftwidth=2 tabstop=2 expandtab
 
 " Theme settings
-" set background=dark                    " Set dark background
-colorscheme pop-punk                   " Set colorscheme
+set background=dark                    " Set dark background
 
+" Recognize String keyword in java as a javaType
+autocmd FileType java syn keyword javaType String
 
-highlight CocWarningHighlight ctermbg=Black guibg=#000000 ctermfg=DarkGray guifg=#808080
-highlight CocErrorHighlight ctermfg=White guifg=#ffffff ctermbg=Red guibg=#ff0000
+if &t_Co == 256 || has('gui_running')
+    colorscheme desert256   " Or some other high-color scheme
+else
+    colorscheme desert      " Or some other low-color scheme
+endif
 
-" Enable highlighting color code
-autocmd CursorHold * silent call CocActionAsync('highlight')
 
 autocmd FileType nerdtree nmap <buffer> <Tab> o
 
@@ -200,6 +197,7 @@ vnoremap <M-k> :m '<-2<CR>gv=gv
 nnoremap <M-j> :m .+1<CR>==
 inoremap <M-j> <Esc>:m .+1<CR>==gi
 vnoremap <M-j> :m '>+1<CR>gv=gv
+
 
 " Use tab for trigger completion with characters ahead and navigate
 " NOTE: There's always complete item selected by default, you may want to enable
@@ -346,4 +344,3 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
