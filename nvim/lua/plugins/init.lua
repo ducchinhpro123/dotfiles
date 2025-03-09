@@ -1,7 +1,9 @@
 local fn = vim.fn
 local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+local packer_bootstrap = false
 
 if fn.empty(fn.glob(install_path)) > 0 then
+    packer_bootstrap = true
     fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
     vim.cmd('packadd packer.nvim')
 end
@@ -11,35 +13,59 @@ return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
     -- File explorer
-    use 'nvim-tree/nvim-tree.lua'
-
-    -- Auto pairs
-    use 'echasnovski/mini.pairs'
-
     use {
-        'nvim-treesitter/nvim-treesitter',
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional, for file icons
+        },
+        config = function()
+            require('plugins.config.nvimtree')
+        end
     }
 
-    -- Colorscheme
-    use 'metalelf0/jellybeans-nvim' 
+    -- Auto pairs
+    use {
+        'echasnovski/mini.pairs',
+        config = function()
+            require('mini.pairs').setup({})
+        end
+    }
+
     use 'rktjmp/lush.nvim'
 
     -- Fuzzy finder
     use {
         'nvim-telescope/telescope.nvim',
         requires = { 'nvim-lua/plenary.nvim' },
+        config = function()
+            require('plugins.config.telescope')
+        end
     }
 
     -- LSP and autocompletion
-    use 'neovim/nvim-lspconfig'
-    use 'hrsh7th/nvim-cmp'
-    use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-cmdline'
-    use 'hrsh7th/cmp-path'
-    use 'L3MON4D3/LuaSnip'
+    use {
+        'neovim/nvim-lspconfig',
+        config = function()
+            require('plugins.config.lsp')
+        end
+    }
+    
+    use {
+        'hrsh7th/nvim-cmp',
+        requires = {
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-cmdline',
+            'hrsh7th/cmp-path',
+            'L3MON4D3/LuaSnip',
+            'saadparwaiz1/cmp_luasnip',
+        },
+        config = function()
+            require('plugins.config.cmp')
+        end
+    }
 
-
+    -- Syntax highlighting using traditional Vim syntax files
     use 'rust-lang/rust.vim'       -- Rust
     use 'pangloss/vim-javascript'  -- JavaScript
     use 'leafgarland/typescript-vim' -- TypeScript
@@ -57,10 +83,9 @@ return require('packer').startup(function(use)
         },
     }
 
-    require('plugins.config.lsp') 
-    require('plugins.config.cmp')
-    require('plugins.config.treesitter')
-    require('mini.pairs').setup({})
-
+    -- Automatically set up configuration after cloning packer.nvim
+    if packer_bootstrap then
+        require('packer').sync()
+    end
 end)
 

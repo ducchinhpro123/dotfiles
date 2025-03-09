@@ -14,14 +14,17 @@ keymap.set('n', '<C-l>', '<C-w>l')
 
 -- Save and quit
 keymap.set('n', '<C-s>', ':w<CR>')
+keymap.set('i', '<C-s>', '<Esc>:w<CR>')
 keymap.set('n', '<leader>q', ':q<CR>')
 keymap.set('n', '<leader>qq', ':q!<CR>')
 
 -- Clear search highlights
 keymap.set('n', '<Esc><Esc>', ':noh<CR>')
 
--- File explorer (NERDTree replacement)
-keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
+-- File explorer - use Lua function directly instead of command
+keymap.set('n', '<leader>e', function()
+    require('nvim-tree.api').tree.toggle()
+end, { desc = "Toggle NvimTree" })
 
 -- Fuzzy finder (Telescope)
 keymap.set('n', '<leader>sf', ':Telescope find_files<CR>')

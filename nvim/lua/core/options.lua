@@ -22,6 +22,13 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 
 -- Load colorscheme
-vim.cmd('colorscheme koehler')
-vim.cmd('highlight Normal guibg=#101010')
+vim.cmd('colorscheme desert')
+
+-- Set consistent black background for all UI elements
+vim.cmd('highlight Normal guibg=#000000')
+vim.cmd('highlight NonText guibg=#000000')
+vim.cmd('highlight LineNr guibg=#000000')
+vim.cmd('highlight SignColumn guibg=#000000')
+vim.cmd('highlight VertSplit guibg=#000000')
+vim.cmd('highlight Pmenu guibg=#000000')
 

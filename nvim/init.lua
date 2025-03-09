@@ -1,17 +1,14 @@
+-- Load performance settings first for maximum effect
+require('core.performance')
+
 -- Load core settings
 require('core.options')
 require('core.keymaps')
 require('core.autocmds')
 
-require'nvim-tree'.setup {}
-
-
 -- Load plugins
 require('plugins.init')
 
-
--- require'lspconfig'.rust_analyzer.setup{}
-
--- Load utility functions
--- require('utils.helpers')
+-- The plugin configurations are now loaded through the use{} blocks in plugins/init.lua
+-- No need for separate requires here
 
