@@ -33,18 +33,16 @@ set smartindent                        " Smart indent
 set wrap                               " Wrap lines
 set signcolumn=no                      " Always show sign column
 
-" MicroPython specific settings
-augroup micropython
-    autocmd!
-    autocmd BufNewFile,BufRead *.py,*.mpy set filetype=python
-    " Use 4 spaces for Python/MicroPython indentation
-    autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-    " Optional: disable line too long error highlighting for MicroPython where space is limited
-    autocmd FileType python let b:ycm_python_flags_disable = ['E501']
-augroup END
+" Persistent Undo
+if !isdirectory($HOME . '/.vim/undodir')
+    call system('mkdir -p ' . $HOME . '/.vim/undodir')
+endif
+set undofile                           " Save undo history
+set undodir=~/.vim/undodir             " Directory for undo files
 
-" MicroPython file associations
-autocmd BufNewFile,BufRead *.mpy set filetype=python
+set list
+set listchars=tab:▸\ ,trail:·,nbsp:␣  " Define how whitespace is shown
+
 
 " File navigation
 map gf :e <cfile><CR>
@@ -69,17 +67,17 @@ colorscheme desert
 " Set custom background color for all screen elements
 function! SetBackgroundColor()
     " Normal text background
-    highlight Normal guibg=#000000 ctermbg=234
+    highlight Normal guibg=#101010 ctermbg=234
     " Empty line ~ characters
-    highlight EndOfBuffer guibg=#000000 ctermbg=234
+    highlight EndOfBuffer guibg=#101010 ctermbg=234
     " Non-text areas 
-    highlight NonText guibg=#000000 ctermbg=234
+    highlight NonText guibg=#101010 ctermbg=234
     " Line number column
-    highlight LineNr guibg=#000000 ctermbg=234
+    highlight LineNr guibg=#101010 ctermbg=234
     " Sign column (gutter)
-    highlight SignColumn guibg=#000000 ctermbg=234
+    highlight SignColumn guibg=#101010 ctermbg=234
     " Vertical split
-    highlight VertSplit guibg=#000000 ctermbg=234
+    highlight VertSplit guibg=#101010 ctermbg=234
 endfunction
 
 " Apply background color after any colorscheme loads
@@ -129,7 +127,7 @@ autocmd FileType c,cpp,python,java,rust,javascript,typescript,dart
 " KEY MAPPINGS
 " =============================================================================
 " exit mode
-inoremap jj <ESC>
+" inoremap jj <ESC>
 
 " Leader key setup
 nnoremap <SPACE> <Nop>
@@ -173,6 +171,7 @@ highlight CurrentWord ctermbg=238 guibg=#444444 ctermfg=NONE guifg=NONE gui=NONE
 
 " Highlight all instances of word under cursor with custom highlighting
 autocmd CursorMoved * silent! exe printf('match CurrentWord /\<%s\>/', escape(expand('<cword>'), '/\'))
+
 " =============================================================================
 " PLUGIN MANAGEMENT
 " =============================================================================
@@ -343,5 +342,26 @@ let g:vimtex_compiler_method = 'latexmk'
 filetype plugin indent on
 autocmd FileType dart setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType typescriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
+" =============================================================================
+" MICROPYTHON CONFIGURATION
+" =============================================================================
+" Python syntax highlighting
+let g:python_highlight_all = 1
+let g:python_highlight_builtins = 1
+let g:python_highlight_exceptions = 1
+let g:python_highlight_string_formatting = 1
 
+" Python formatting
+autocmd FileType python noremap <leader>f :Neoformat black<CR>
+
+" Global formatting shortcut (space+c+f)
+nnoremap <leader>cf :Neoformat<CR>
+
+" Configure YCM for MicroPython
+let g:ycm_python_binary_path = 'python3'
+let g:ycm_python_interpreter_path = ''
+let g:ycm_extra_conf_vim_data = ['g:ycm_python_binary_path']
