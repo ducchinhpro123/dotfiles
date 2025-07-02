@@ -11,7 +11,7 @@ fish_add_path $ANDROID_HOME/emulator $ANDROID_HOME/tools $ANDROID_HOME/tools/bin
 
 set -gx PATH /home/ducchinh/development/flutter/bin $PATH
 
-set -x GEMINI_API_KEY "AIzaSyCld3rjonDltUxbNRUnLq_KxxT2SwI3Fws"
+set -x GEMINI_API_KEY ""
 
 set -x GTK_IM_MODULE fcitx
 set -x QT_IM_MODULE fcitx
