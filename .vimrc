@@ -3,6 +3,9 @@
 " =============================================================================
 call plug#begin('~/.vim/plugged')
 
+Plug 'terryma/vim-expand-region'
+
+Plug 'IngoMeyer441/coc_current_word',
 
 " File navigation and UI
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -10,14 +13,12 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'liuchengxu/vim-which-key'
 Plug 'airblade/vim-gitgutter'
+Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'alvan/vim-closetag'
 
-Plug 'OmniSharp/omnisharp-vim'
-Plug 'jlcrochet/vim-razor'
-
 " Code editing helpers
-Plug 'preservim/nerdcommenter'          " Extended commenting
+" Plug 'preservim/nerdcommenter'          " Extended commenting
 Plug 'jiangmiao/auto-pairs'             " Auto close brackets
 Plug 'tpope/vim-sensible'               " Sensible defaults
 Plug 'tpope/vim-commentary'
@@ -25,22 +26,12 @@ Plug 'tpope/vim-surround'
 
 " Plug 'andymass/vim-matchup'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 
-" Code completion and intelligence
-" " Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --ts-completer --java-completer --python-completer' }
-" Language support
-Plug 'mxw/vim-jsx'
-Plug 'pangloss/vim-javascript'
-" Plug 'othree/html5.vim'
-Plug 'leafOfTree/vim-svelte-plugin'
-Plug 'peitalin/vim-jsx-typescript'
+Plug 'sheerun/vim-polyglot'
 
-" LaTeX support
-Plug 'lervag/vimtex'
+Plug 'lumiliet/vim-twig'
 
-Plug 'dart-lang/dart-vim-plugin'
-Plug 'thosakwe/vim-flutter'
 
 call plug#end()
 
@@ -49,7 +40,6 @@ call plug#end()
 " =============================================================================
 set nobackup
 set nowritebackup
-set nowb
 set noswapfile
 set autoread                          " Auto-reload files when changed externally
 set mouse=a
@@ -60,15 +50,6 @@ set ruler                             " Show cursor position
 set laststatus=2                      " Always show status line
 set guiheadroom=0
 
-" Check for file changes more frequently
-" Trigger `autoread` when files change on disk and when switching buffers
-" augroup AutoReloadFile
-"     autocmd!
-"     " Check if file has changed when cursor stops moving
-"     autocmd CursorHold,CursorHoldI * checktime
-"     " Check when switching buffers or focusing Vim again
-"     autocmd FocusGained,BufEnter * checktime
-" augroup END
 
 " =============================================================================
 " EDITOR BEHAVIOR
@@ -144,11 +125,11 @@ function! SetBackgroundColor()
 endfunction
 
 
-    " highlight SignColumn guibg=#101010 ctermbg=234
-    " highlight LineNr guibg=#101010 ctermbg=234
+" highlight SignColumn guibg=#101010 ctermbg=234
+" highlight LineNr guibg=#101010 ctermbg=234
 " " Apply background color after any colorscheme loads
 " autocmd ColorScheme * call SetBackgroundColor()
-" " " Ensure background color is applied when Vim starts
+" Ensure background color is applied when Vim starts
 " autocmd VimEnter * call SetBackgroundColor()
 
 " Status line configuration
@@ -161,7 +142,6 @@ function! HasPaste()
     return ''
 endfunction
 
-" Custom highlighting for YCM popup
 " Make sure these are after colorscheme loading to override defaults
 " let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.jsx"
 
@@ -181,7 +161,8 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " Clear search highlighting with Esc
-:nnoremap <Esc><Esc> :noh<CR>
+" :nnoremap <Esc><Esc> :noh<CR>
+nnoremap <F3> :set hlsearch!<CR>
 
 " Save with Ctrl+S
 nnoremap <C-s> :w<CR>
@@ -207,18 +188,15 @@ map <space>ba :bufdo bd<cr>
 " CURRENT WORD HIGHLIGHTING
 " =============================================================================
 " Define a custom highlight group for current word
-highlight CurrentWord ctermbg=238 guibg=#444444 ctermfg=NONE guifg=NONE gui=NONE cterm=NONE
+let g:coc_current_word_highlight_delay = 0
+" hi CurrentWord guifg=#D3BF8C guibg=#3A3A3A gui=underline,bold ctermfg=180 ctermbg=237 cterm=underline,bold
 
-" Alternative: Highlight on CursorHold (less frequent)
-" autocmd CursorMoved * silent! exe printf('match CurrentWord /\<%s\>/', escape(expand('<cword>'), '/\'))
-" autocmd InsertEnter,BufLeave * match none
 
-" autocmd BufNewFile,BufReadPost *.ino,*.pde set filetype=cpp
+colorscheme evening
+set t_Co=256                         " Enable 256 colors
+set termguicolors                    " Enable GUI colors for the terminal to get truecolor
 
-colorscheme candycode
-highlight clear SignColumn
-
-" " colorscheme blackbeauty
+" highlight clear SignColumn
 
 runtime! plugins/*.vim
 
@@ -232,7 +210,7 @@ autocmd FileType nerdtree nmap <buffer> <Tab> o
 " =============================================================================
 " FZF CONFIGURATION
 " =============================================================================
-let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/\.git/*" ! -path "*/node_modules/*" ! -path "*/vendor/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" '
+let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/\.git/*" ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" '
 
 nnoremap <space>sf :<C-u>Files<CR>
 nnoremap <space>sg :RG<CR>
@@ -350,9 +328,6 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
-highlight CocWarningHighlight guifg=#e5c07b gui=italic
-highlight CocWarningHighlight guibg=#2c323c gui=italic
-highlight CocHintHighlight guifg=#56b6c2 guibg=#2c323c gui=italic
 
 
 " Remap <C-f> and <C-b> to scroll float windows/popups
@@ -367,65 +342,7 @@ endif
 
 let g:vim_svelte_plugin_use_typescript = 1
 
-" =============================================================================
-" LATEX CONFIGURATION
-" =============================================================================
-let g:vimtex_view_method = 'zathura'
-let g:vimtex_compiler_method = 'xelatex'
 
-" Additional LaTeX configuration
-let g:vimtex_quickfix_mode = 0         " Show quickfix window on errors
-let g:vimtex_quickfix_open_on_warning = 0
-let g:vimtex_compiler_latexmk = {
-    \ 'build_dir' : '',
-    \ 'callback' : 1,
-    \ 'continuous' : 1,
-    \ 'executable' : 'latexmk',
-    \ 'hooks' : [],
-    \ 'options' : [
-    \   '-verbose',
-    \   '-file-line-error',
-    \   '-synctex=1',
-    \   '-interaction=nonstopmode',
-    \ ],
-    \}
-
-" Enable folding for LaTeX documents
-let g:vimtex_fold_enabled = 0
-" let g:vimtex_fold_types = {
-"     \ 'comments' : {'enabled' : 1},
-"     \ 'preamble' : {'enabled' : 1},
-"     \ 'sections' : {'enabled' : 1},
-"     \}
-
-" Enable indentation for LaTeX
-let g:vimtex_indent_enabled = 0
-
-" Enable text objects for LaTeX
-let g:vimtex_text_obj_enabled = 1
-let g:vimtex_text_obj_variant = 'vimtex'
-
-" Enable completion for LaTeX with YouCompleteMe
-" if !exists('g:ycm_semantic_triggers')
-"     let g:ycm_semantic_triggers = {}
-" endif
-" let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
-
-" LaTeX specific mappings
-augroup latex_mappings
-    autocmd!
-    autocmd FileType tex nnoremap <buffer> <localleader>ll :VimtexCompile<CR>
-    autocmd FileType tex nnoremap <buffer> <localleader>lv :VimtexView<CR>
-    autocmd FileType tex nnoremap <buffer> <localleader>lc :VimtexClean<CR>
-    autocmd FileType tex nnoremap <buffer> <localleader>le :VimtexErrors<CR>
-    autocmd FileType tex nnoremap <buffer> <localleader>lt :VimtexTocToggle<CR>
-    autocmd FileType tex nnoremap <buffer> <localleader>li :VimtexInfo<CR>
-    autocmd FileType tex inoremap <buffer> [[ \begin{
-    autocmd FileType tex inoremap <buffer> ]] \end{
-augroup END
-
-" Set spell checking for LaTeX documents
-" autocmd FileType tex setlocal spell spelllang=en_us
 
 " =============================================================================
 " FILETYPE-SPECIFIC SETTINGS
@@ -436,7 +353,6 @@ filetype plugin indent on
 autocmd BufNewFile,BufRead *.razor set filetype=razor
 autocmd BufNewFile,BufRead *.cshtml set filetype=razor
 
-autocmd FileType dart setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 autocmd FileType typescriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
@@ -446,69 +362,7 @@ autocmd FileType typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expand
 autocmd FileType razor setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 autocmd FileType razor setlocal commentstring=@*\ %s\ *@
 
-" =============================================================================
-" OMNISHARP CONFIGURATION
-" =============================================================================
-" Use the installed OmniSharp-roslyn server
-let g:OmniSharp_server_use_net6 = 1
-
-" Don't autoselect first omnicomplete option, show options even if there is only
-" one (so the preview documentation is accessible)
-set completeopt=longest,menuone,preview
-
-" OmniSharp won't work without this setting
 filetype plugin on
-
-" Fetch full documentation during omnicomplete requests
-let g:omnicomplete_fetch_full_documentation = 1
-
-" Set the type lookup function to use the preview window instead of echoing it
-let g:OmniSharp_typeLookupInPreview = 0
-
-" Timeout in seconds to wait for a response from the server
-let g:OmniSharp_timeout = 5
-
-" Don't show type information in the echo area
-let g:OmniSharp_echo_type = 0
-
-let g:OmniSharp_highlighting = 0
-" Highlight semantic suggestions
-" let g:OmniSharp_highlighting = 3
-
-" OmniSharp key mappings
-augroup omnisharp_commands
-    autocmd!
-
-    " Show type information automatically when the cursor stops moving
-    autocmd CursorHold *.cs OmniSharpTypeLookup
-
-    " The following commands are contextual, based on the cursor position
-    autocmd FileType cs nnoremap <buffer> gd :OmniSharpGotoDefinition<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fu :OmniSharpFindUsages<CR>
-
-    " Find all code errors/warnings for the current solution
-    autocmd FileType cs nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
-
-    " Contextual code actions (uses fzf, vim-clap or ctrlp.vim selector when available)
-    autocmd FileType cs nnoremap <buffer> <Leader><Space> :OmniSharpGetCodeActions<CR>
-    " Run code actions with text selected in visual mode to extract method
-    autocmd FileType cs xnoremap <buffer> <Leader><Space> :call OmniSharp#GetCodeActions('visual')<CR>
-
-    " Rename with dialog
-    autocmd FileType cs nnoremap <buffer> <Leader>nm :OmniSharpRename<CR>
-    autocmd FileType cs nnoremap <buffer> <F2> :OmniSharpRename<CR>
-    " Rename without dialog - with cursor on the symbol to rename
-    autocmd FileType cs nnoremap <buffer> <Leader>r :OmniSharpRename<CR>
-
-    " Format document
-    autocmd FileType cs nnoremap <buffer> <Leader>cf :OmniSharpCodeFormat<CR>
-
-    " Start the omnisharp server for the current solution
-    autocmd FileType cs nnoremap <buffer> <Leader>ss :OmniSharpStartServer<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>sp :OmniSharpStopServer<CR>
-augroup END
 
 " Configure CS file settings
 autocmd FileType cs setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab

@@ -2,31 +2,25 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
-# Set PATH
-set -gx PATH $PATH ~/bin
-set -x PATH $HOME/.local/bin $PATH
-set -x PATH $HOME/development/flutter/bin $PATH
-#set -x JAVA_HOME /usr/lib/jvm/java-22-openjdk
-#set -x PATH $JAVA_HOME/bin $PATH
-set -x CHROME_EXECUTABLE /usr/bin/chromium
-set -x Qt6_DIR /usr/bin/qmake6
+# set -Ux PATH ~/Android/Sdk/emulator $PATH
+# fish_add_path -g -p ~/development/flutter/bin
 
-set -x ANDROID_SDK_ROOT /home/duchinh/Android/Sdk
-#set -x ANDROID_SDK_ROOT /opt/android-sdk
-set -x PATH $PATH $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/
-set -x PATH $PATH $ANDROID_SDK_ROOT/platform-tools/
-set -x PATH $PATH $ANDROID_SDK_ROOT/tools/bin/
-set -x PATH $PATH $ANDROID_SDK_ROOT/emulator
-set -x PATH $PATH $ANDROID_SDK_ROOT/tools/
+set -x ANDROID_HOME $HOME/Android/Sdk
 
-set -x ANDROID_AVD_HOME $HOME/.android/avd
-set -x ANDROID_SDK_HOME $HOME/Android/Sdk
+fish_add_path $ANDROID_HOME/emulator $ANDROID_HOME/tools $ANDROID_HOME/tools/bin $ANDROID_HOME/platform-tools
 
+set -gx PATH /home/ducchinh/development/flutter/bin $PATH
 
-set -x QTWEBENGINE_DISABLE_SANDBOX 1
+set -x GEMINI_API_KEY "AIzaSyCld3rjonDltUxbNRUnLq_KxxT2SwI3Fws"
 
-set -x TERM xterm-256color
+set -x GTK_IM_MODULE fcitx
+set -x QT_IM_MODULE fcitx
+set -x XMODIFIERS @im=fcitx
 
-# Aliases
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
+set -gx PATH $PATH /home/ducchinh/.dotnet/tools
+set -gx PATH /usr/bin $PATH
+
+starship init fish | source
+
+# set -gx DOTNET_ROOT $HOME/dotnet
+# set -gx PATH $PATH:$HOME/dotnet
