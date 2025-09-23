@@ -2,38 +2,85 @@
 " PLUGIN MANAGEMENT
 " =============================================================================
 call plug#begin('~/.vim/plugged')
-
+" Plug 'tpope/vim-fugitive'
 Plug 'terryma/vim-expand-region'
-
-Plug 'IngoMeyer441/coc_current_word',
 
 " File navigation and UI
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'liuchengxu/vim-which-key'
+
 Plug 'airblade/vim-gitgutter'
 Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'alvan/vim-closetag'
 
-" Code editing helpers
-" Plug 'preservim/nerdcommenter'          " Extended commenting
 Plug 'jiangmiao/auto-pairs'             " Auto close brackets
 Plug 'tpope/vim-sensible'               " Sensible defaults
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 
-" Plug 'andymass/vim-matchup'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-Plug 'neoclide/coc.nvim', { 'branch': 'release'}
-
-Plug 'sheerun/vim-polyglot'
 
 Plug 'lumiliet/vim-twig'
 
+Plug 'MattesGroeger/vim-bookmarks'
+
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+
+Plug 'mhinz/vim-startify'
+Plug 'Lokaltog/vim-distinguished'
+
+Plug 'tpope/vim-vividchalk'
+
+
+Plug 'othree/html5.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'evanleck/vim-svelte', {'branch': 'main'}
+Plug 'HerringtonDarkholme/yats.vim'
+
+Plug 'lervag/vimtex'
+Plug 'ycm-core/YouCompleteMe'
 
 call plug#end()
+
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+
+let g:ctrlp_show_hidden = 1
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.git|\.hg|\.svn|node_modules|\.venv)$',
+  \ 'file': '\v\.(exe|so|dll)$'
+  \ }
+
+" =============================================================================
+" DASHBOARD
+" =============================================================================
+
+" returns all modified files of the current git repo
+" `2>/dev/null` makes the command fail quietly, so that when we are not
+" in a git repo, the list will be empty
+function! s:gitModified()
+    let files = systemlist('git ls-files -m 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+endfunction
+
+" same as above, but show untracked files, honouring .gitignore
+function! s:gitUntracked()
+    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+endfunction
+
+let g:startify_lists = [
+        \ { 'type': 'files',     'header': ['   MRU']            },
+        \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+        \ { 'type': 'sessions',  'header': ['   Sessions']       },
+        \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+        \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
+        \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
+        \ { 'type': 'commands',  'header': ['   Commands']       },
+        \ ]
 
 " =============================================================================
 " GENERAL SETTINGS
@@ -44,12 +91,13 @@ set noswapfile
 set autoread                          " Auto-reload files when changed externally
 set mouse=a
 set clipboard=unnamedplus             " Use system clipboard
-set updatetime=300
+set updatetime=10
 set encoding=utf-8
 set ruler                             " Show cursor position
 set laststatus=2                      " Always show status line
 set guiheadroom=0
 
+set ttyfast
 
 " =============================================================================
 " EDITOR BEHAVIOR
@@ -114,7 +162,7 @@ function! SetBackgroundColor()
     highlight Normal guibg=#101010 ctermbg=234
     " Empty line ~ characters
     highlight EndOfBuffer guibg=#101010 ctermbg=234
-    " Non-text areas 
+    " Non-text areas
     highlight NonText guibg=#101010 ctermbg=234
     " Line number column
     highlight LineNr guibg=#101010 ctermbg=234
@@ -127,20 +175,28 @@ endfunction
 
 " highlight SignColumn guibg=#101010 ctermbg=234
 " highlight LineNr guibg=#101010 ctermbg=234
-" " Apply background color after any colorscheme loads
+" Apply background color after any colorscheme loads
 " autocmd ColorScheme * call SetBackgroundColor()
 " Ensure background color is applied when Vim starts
 " autocmd VimEnter * call SetBackgroundColor()
 
-" Status line configuration
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    endif
-    return ''
-endfunction
+set statusline=
+set statusline +=%1*\ %n\ %*            "buffer number
+set statusline +=%5*%{&ff}%*            "file format
+set statusline +=%3*%y%*                "file type
+set statusline +=%4*\ %<%F%*            "full path
+set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%=%5l%*             "current line
+set statusline +=%2*/%L%*               "total lines
+set statusline +=%1*%4v\ %*             "virtual column number
+set statusline +=%2*0x%04B\ %*          "character under cursor
+
+autocmd ColorScheme * hi User1 guifg=#eea040 guibg=#222222
+autocmd ColorScheme * hi User2 guifg=#dd3333 guibg=#222222
+autocmd ColorScheme * hi User3 guifg=#ff66ff guibg=#222222
+autocmd ColorScheme * hi User4 guifg=#a0ee40 guibg=#222222
+autocmd ColorScheme * hi User5 guifg=#eeee40 guibg=#222222
 
 " Make sure these are after colorscheme loading to override defaults
 " let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.jsx"
@@ -149,6 +205,8 @@ endfunction
 " KEY MAPPINGS
 " =============================================================================
 
+nnoremap <C-e> 5<C-e>
+nnoremap <C-y> 5<C-y>
 " Leader key setup
 nnoremap <SPACE> <Nop>
 let mapleader=" "
@@ -188,13 +246,19 @@ map <space>ba :bufdo bd<cr>
 " CURRENT WORD HIGHLIGHTING
 " =============================================================================
 " Define a custom highlight group for current word
-let g:coc_current_word_highlight_delay = 0
 " hi CurrentWord guifg=#D3BF8C guibg=#3A3A3A gui=underline,bold ctermfg=180 ctermbg=237 cterm=underline,bold
 
+" colorscheme koehler
+" colorscheme evening
 
-colorscheme evening
 set t_Co=256                         " Enable 256 colors
 set termguicolors                    " Enable GUI colors for the terminal to get truecolor
+" let g:seoul256_background = 233
+" colo distinguished
+colo vividchalk
+
+
+highlight SignColumn guibg=NONE ctermbg=NONE
 
 " highlight clear SignColumn
 
@@ -210,138 +274,17 @@ autocmd FileType nerdtree nmap <buffer> <Tab> o
 " =============================================================================
 " FZF CONFIGURATION
 " =============================================================================
-let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/\.git/*" ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" '
+let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" ! -path "*/.venv/*"'
 
 nnoremap <space>sf :<C-u>Files<CR>
+
+command! -bang -nargs=* RG
+  \ call fzf#vim#grep(
+  \   'rg --hidden --glob "!node_modules/*" --glob "!dist/*" --glob "!build/*" --glob "!target/*" --glob "!.venv/*" --glob "!.git/*" --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+nnoremap <space>sg :RG<Space>
 nnoremap <space>sg :RG<CR>
 nnoremap <space>sb :Buffers<CR>
-
-" =============================================================================
-" WHICH-KEY CONFIGURATION
-" =============================================================================
-nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
-nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
-
-" =============================================================================
-" COC CONFIGURATION
-" =============================================================================
-
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent><nowait> gd <Plug>(coc-definition)
-nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gi <Plug>(coc-implementation)
-nmap <silent><nowait> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-" Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-" Setup formatexpr specified filetype(s).
-autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-
-" Update signature help on jump placeholder.
-autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-
-" Remap <leader>d for show list of diagnostics of current buffer.
-" nmap <leader>d  <Plug>(coc-diagnostic-info)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
-
-" Add status line support, for integration with other status line plugins
-" https://github.com/neoclide/coc.nvim/wiki/Status-line-integration
-" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Using CocList commands
-" Show all diagnostics
-" nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent><nowait> <space>x  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-" nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-
-
-" Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-let g:vim_svelte_plugin_use_typescript = 1
-
 
 
 " =============================================================================
@@ -353,19 +296,28 @@ filetype plugin indent on
 autocmd BufNewFile,BufRead *.razor set filetype=razor
 autocmd BufNewFile,BufRead *.cshtml set filetype=razor
 
+" Arduino file detection and configuration
+autocmd BufNewFile,BufRead *.ino set filetype=cpp
+autocmd BufNewFile,BufRead *.pde set filetype=cpp
+
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 autocmd FileType typescriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 autocmd FileType typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType svelte setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Razor-specific settings
 autocmd FileType razor setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType razor setlocal commentstring=@*\ %s\ *@
+autocmd FileType razor setlocal commentstring=@*\%s\*@
 
 filetype plugin on
 
 " Configure CS file settings
 autocmd FileType cs setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
+
+" Arduino/C++ specific settings
+autocmd FileType cpp setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
+autocmd FileType cpp setlocal commentstring=/*\ %s\ */
 
 " =============================================================================
 " VIM-CLOSETAG CONFIGURATION
@@ -387,3 +339,81 @@ let g:closetag_regions = {
 " Don't auto-close these HTML tags
 let g:closetag_emptyTags_caseSensitive = 1
 
+
+" For gvim
+set guioptions -=m 
+set guioptions -=T
+
+" =============================================================================
+" YOUCOMPLETEME CONGIGURATION
+" =============================================================================
+let g:ycm_auto_trigger = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_warning_symbol = 0
+let g:ycm_enable_diagnostic_signs = 0
+let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_auto_hover = 1
+let g:ycm_semantic_triggers = 0
+let g:ycm_signature_help_disable_syntax = 1
+let g:ycm_rust_toolchain_root = expand('~/.cargo')
+
+" Arduino/C++ specific configuration
+let g:ycm_global_ycm_extra_conf = '~/.ycm_global_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_collect_identifiers_from_tags_files = 1
+" Always look for .ycm_extra_conf.py in project directories
+let g:ycm_extra_conf_vim_data = ['&filetype']
+
+nnoremap gd :YcmCompleter GoToDefinition<CR>
+
+let s:ycm_hover_popup = -1
+function s:Hover()
+    let response = youcompleteme#GetCommandResponse( 'GetDoc' )
+    if response == ''
+      return
+    endif
+
+    call popup_hide( s:ycm_hover_popup )
+    let s:ycm_hover_popup = popup_atcursor( balloon_split( response ), {} )
+endfunction
+
+nnoremap <silent> K :call <SID>Hover()<CR>
+nnoremap <Space>f :YcmCompleter Format<CR>
+xnoremap <Space>f :YcmCompleter Format<CR>
+set completeopt=menu,menuone,noselect
+
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_key_list_stop_completion = ['<C-m>']
+
+" Highlight all instances of word under cursor, when idle.
+" Useful when studying strange source code.
+" Type z/ to toggle highlighting on/off.
+nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+function! AutoHighlightToggle()
+    let @/ = ''
+    if exists('#auto_highlight')
+        au! auto_highlight
+        augroup! auto_highlight
+        setl updatetime=4000
+        echo 'Highlight current word: off'
+        return 0
+    else
+        augroup auto_highlight
+            au!
+            au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
+        augroup end
+        setl updatetime=10
+        echo 'Highlight current word: ON'
+        return 1
+    endif
+endfunction
+
+let g:ycm_language_server = [
+  \ {
+  \   'name': 'php',
+  \   'cmdline': [ expand('~/.local/bin/phpactor'), 'language-server' ],
+  \   'filetypes': [ 'php' ]
+  \ },
+\ ]
