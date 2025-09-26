@@ -26,22 +26,20 @@ Plug 'lumiliet/vim-twig'
 
 Plug 'MattesGroeger/vim-bookmarks'
 
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
-
 Plug 'mhinz/vim-startify'
 Plug 'Lokaltog/vim-distinguished'
 
 Plug 'tpope/vim-vividchalk'
 
-
-Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'evanleck/vim-svelte', {'branch': 'main'}
-Plug 'HerringtonDarkholme/yats.vim'
+" Plug 'othree/html5.vim'
+" Plug 'pangloss/vim-javascript'
+" Plug 'evanleck/vim-svelte', {'branch': 'main'}
+" Plug 'HerringtonDarkholme/yats.vim'
 
 Plug 'lervag/vimtex'
 Plug 'ycm-core/YouCompleteMe'
-
+Plug 'leafOfTree/vim-svelte-plugin'
+" Plug 'evanleck/vim-svelte'
 call plug#end()
 
 
@@ -292,6 +290,8 @@ nnoremap <space>sb :Buffers<CR>
 " =============================================================================
 filetype plugin indent on
 
+let g:vim_svelte_plugin_use_typescript = 1
+
 " Razor file detection and configuration
 autocmd BufNewFile,BufRead *.razor set filetype=razor
 autocmd BufNewFile,BufRead *.cshtml set filetype=razor
@@ -367,17 +367,25 @@ let g:ycm_extra_conf_vim_data = ['&filetype']
 nnoremap gd :YcmCompleter GoToDefinition<CR>
 
 let s:ycm_hover_popup = -1
-function s:Hover()
+
+function s:MoreHover()
     let response = youcompleteme#GetCommandResponse( 'GetDoc' )
     if response == ''
-      return
+        let response = youcompleteme#GetCommandResponse('GetHover')
     endif
 
-    call popup_hide( s:ycm_hover_popup )
-    let s:ycm_hover_popup = popup_atcursor( balloon_split( response ), {} )
+    if response == ''
+        execute 'normal! K'
+        return
+    endif
+
+    call popup_hide(s:ycm_hover_popup)
+    let s:ycm_hover_popup = popup_atcursor(balloon_split(response), {})
 endfunction
 
-nnoremap <silent> K :call <SID>Hover()<CR>
+nnoremap <silent> K :call <SID>MoreHover()<CR>
+
+" nnoremap <silent><Space> k :call <SID>GetDoc()<CR>
 nnoremap <Space>f :YcmCompleter Format<CR>
 xnoremap <Space>f :YcmCompleter Format<CR>
 set completeopt=menu,menuone,noselect
@@ -413,7 +421,13 @@ endfunction
 let g:ycm_language_server = [
   \ {
   \   'name': 'php',
-  \   'cmdline': [ expand('~/.local/bin/phpactor'), 'language-server' ],
+  \   'cmdline': [ 'php', expand('~/.local/bin/phpactor'), 'language-server' ],
   \   'filetypes': [ 'php' ]
+  \ },
+  \ {
+  \   'name': 'svelte',
+  \   'cmdline': [ 'svelteserver', '--stdio' ],
+  \   'filetypes': [ 'svelte' ],
+  \   'project_root_files': [ 'package.json', 'svelte.config.js', 'vite.config.js' ]
   \ },
 \ ]
