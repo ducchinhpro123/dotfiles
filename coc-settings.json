@@ -1,0 +1,28 @@
+{
+    "suggest.autoTrigger": "none",
+    "diagnostic.enable": false,
+    "pullDiagnostic.onChange": false,
+    "signature.enable": false,
+    "inlayHint.enable": false,
+    "semanticTokens.enable": false,
+    "diagnostic.autoRefresh": false,
+    "diagnostic.enableSign": false,
+    "documentHighlight.timeout": 300,
+    "notification.border": false,
+    "java.jdt.ls.java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
+    "clangd.path": "/usr/bin/clangd",
+
+    "languageserver":{
+        "pyrefly": {
+            "command": "pyrefly",
+            "args": ["lsp"],
+            "filetypes": ["python"],
+            "rootPatterns": ["pyrefly.toml", "pyproject.toml", ".git"]
+        },
+        "rust": {
+            "command": "rust-analyzer",
+            "filetypes": ["rust"],
+            "rootPatterns": ["Cargo.toml"]
+        }
+    }
+}
