@@ -2,7 +2,6 @@
 " PLUGIN MANAGEMENT
 " =============================================================================
 call plug#begin('~/.vim/plugged')
-" Plug 'tpope/vim-fugitive'
 Plug 'terryma/vim-expand-region'
 
 " File navigation and UI
@@ -11,7 +10,6 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 Plug 'airblade/vim-gitgutter'
-Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'alvan/vim-closetag'
 
@@ -20,38 +18,43 @@ Plug 'tpope/vim-sensible'               " Sensible defaults
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 
+" multi-cursors
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
+" Twig template highlighting
 Plug 'lumiliet/vim-twig'
 
+" For bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
 
+" Start screen
 Plug 'mhinz/vim-startify'
-Plug 'Lokaltog/vim-distinguished'
 
+" Colorscheme
 Plug 'tpope/vim-vividchalk'
 
-" Plug 'othree/html5.vim'
-" Plug 'pangloss/vim-javascript'
-" Plug 'evanleck/vim-svelte', {'branch': 'main'}
-" Plug 'HerringtonDarkholme/yats.vim'
-
+"For Latex
 Plug 'lervag/vimtex'
-Plug 'ycm-core/YouCompleteMe'
+
+" Completion engine
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+
 Plug 'leafOfTree/vim-svelte-plugin'
-" Plug 'evanleck/vim-svelte'
+
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+
+" Display colors
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 call plug#end()
+
+" =============================================================================
+" VIM HEXOKINASE
+" =============================================================================
 
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-
-let g:ctrlp_show_hidden = 1
-
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.git|\.hg|\.svn|node_modules|\.venv)$',
-  \ 'file': '\v\.(exe|so|dll)$'
-  \ }
-
 " =============================================================================
 " DASHBOARD
 " =============================================================================
@@ -155,20 +158,20 @@ endif
 
 
 " Set custom background color for all screen elements
-function! SetBackgroundColor()
-    " Normal text background
-    highlight Normal guibg=#101010 ctermbg=234
-    " Empty line ~ characters
-    highlight EndOfBuffer guibg=#101010 ctermbg=234
-    " Non-text areas
-    highlight NonText guibg=#101010 ctermbg=234
-    " Line number column
-    highlight LineNr guibg=#101010 ctermbg=234
-    " Sign column (gutter)
-    highlight SignColumn guibg=#101010 ctermbg=234
-    " Vertical split
-    highlight VertSplit guibg=#101010 ctermbg=234
-endfunction
+" function! SetBackgroundColor()
+"     " Normal text background
+"     highlight Normal guibg=#101010 ctermbg=234
+"     " Empty line ~ characters
+"     highlight EndOfBuffer guibg=#101010 ctermbg=234
+"     " Non-text areas
+"     highlight NonText guibg=#101010 ctermbg=234
+"     " Line number column
+"     highlight LineNr guibg=#101010 ctermbg=234
+"     " Sign column (gutter)
+"     highlight SignColumn guibg=#101010 ctermbg=234
+"     " Vertical split
+"     highlight VertSplit guibg=#101010 ctermbg=234
+" endfunction
 
 
 " highlight SignColumn guibg=#101010 ctermbg=234
@@ -203,8 +206,8 @@ autocmd ColorScheme * hi User5 guifg=#eeee40 guibg=#222222
 " KEY MAPPINGS
 " =============================================================================
 
-nnoremap <C-e> 5<C-e>
-nnoremap <C-y> 5<C-y>
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 " Leader key setup
 nnoremap <SPACE> <Nop>
 let mapleader=" "
@@ -227,14 +230,14 @@ inoremap <C-s> <Esc>:w!<CR>
 inoremap <C-c> <Esc>
 
 " Move lines up/down with Alt+j/k
-" execute "set <M-j>=\ej"
-" execute "set <M-k>=\ek"
-" nnoremap <M-k> :m .-2<CR>==
-" inoremap <M-k> <Esc>:m .-2<CR>==gi
-" vnoremap <M-k> :m '<-2<CR>gv=gv
-" nnoremap <M-j> :m .+1<CR>==
-" inoremap <M-j> <Esc>:m .+1<CR>==gi
-" vnoremap <M-j> :m '>+1<CR>gv=gv
+execute "set <M-j>=\ej"
+execute "set <M-k>=\ek"
+nnoremap <M-k> :m .-2<CR>==
+inoremap <M-k> <Esc>:m .-2<CR>==gi
+vnoremap <M-k> :m '<-2<CR>gv=gv
+nnoremap <M-j> :m .+1<CR>==
+inoremap <M-j> <Esc>:m .+1<CR>==gi
+vnoremap <M-j> :m '>+1<CR>gv=gv
 
 " Buffer management
 map <leader>bd :Bclose<cr>:tabclose<cr>gT
@@ -253,7 +256,9 @@ set t_Co=256                         " Enable 256 colors
 set termguicolors                    " Enable GUI colors for the terminal to get truecolor
 " let g:seoul256_background = 233
 " colo distinguished
-colo vividchalk
+" colo vividchalk
+" color solarized8_high
+color koehler
 
 
 highlight SignColumn guibg=NONE ctermbg=NONE
@@ -272,23 +277,29 @@ autocmd FileType nerdtree nmap <buffer> <Tab> o
 " =============================================================================
 " FZF CONFIGURATION
 " =============================================================================
-let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" ! -path "*/.venv/*"'
+" let $FZF_DEFAULT_COMMAND = 'find . -type f ! -path "*/.git/*" ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" ! -path "*/target/*" ! -path "*/.venv/*"'
 
-nnoremap <space>sf :<C-u>Files<CR>
+" nnoremap <space>sf :<C-u>Files!<CR>
+nnoremap <C-p> :Files!<CR>
+" command! -bang -nargs=* RG
+"   \ call fzf#vim#grep(
+"   \   'rg --hidden --glob "!node_modules/*" --glob "!dist/*" --glob "!build/*" --glob "!target/*" --glob "!.venv/*" --glob "!.git/*" --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+"   \   fzf#vim#with_preview(), <bang>0)
 
-command! -bang -nargs=* RG
-  \ call fzf#vim#grep(
-  \   'rg --hidden --glob "!node_modules/*" --glob "!dist/*" --glob "!build/*" --glob "!target/*" --glob "!.venv/*" --glob "!.git/*" --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
-nnoremap <space>sg :RG<Space>
-nnoremap <space>sg :RG<CR>
+nnoremap <space>sg :RG!<Space>
+nnoremap <space>sg :RG!<CR>
 nnoremap <space>sb :Buffers<CR>
 
 
 " =============================================================================
 " FILETYPE-SPECIFIC SETTINGS
 " =============================================================================
+filetype plugin on
 filetype plugin indent on
+
+let g:coc_filetype_map = {
+  \ 'ino': 'cpp',
+  \ }
 
 let g:vim_svelte_plugin_use_typescript = 1
 
@@ -297,8 +308,8 @@ autocmd BufNewFile,BufRead *.razor set filetype=razor
 autocmd BufNewFile,BufRead *.cshtml set filetype=razor
 
 " Arduino file detection and configuration
-autocmd BufNewFile,BufRead *.ino set filetype=cpp
-autocmd BufNewFile,BufRead *.pde set filetype=cpp
+" autocmd BufNewFile,BufRead *.ino set filetype=cpp
+" autocmd BufNewFile,BufRead *.pde set filetype=cpp
 
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
@@ -310,14 +321,15 @@ autocmd FileType svelte setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 autocmd FileType razor setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 autocmd FileType razor setlocal commentstring=@*\%s\*@
 
-filetype plugin on
 
 " Configure CS file settings
 autocmd FileType cs setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 
 " Arduino/C++ specific settings
 autocmd FileType cpp setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType cpp setlocal commentstring=/*\ %s\ */
+
+
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 " =============================================================================
 " VIM-CLOSETAG CONFIGURATION
@@ -340,94 +352,45 @@ let g:closetag_regions = {
 let g:closetag_emptyTags_caseSensitive = 1
 
 
+
 " For gvim
 set guioptions -=m 
 set guioptions -=T
 
 " =============================================================================
-" YOUCOMPLETEME CONGIGURATION
+" COC CONGIGURATION
 " =============================================================================
-let g:ycm_auto_trigger = 0
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_warning_symbol = 0
-let g:ycm_enable_diagnostic_signs = 0
-let g:ycm_enable_diagnostic_highlighting = 0
-let g:ycm_auto_hover = 1
-let g:ycm_semantic_triggers = 0
-let g:ycm_signature_help_disable_syntax = 1
-let g:ycm_rust_toolchain_root = expand('~/.cargo')
+autocmd FileType json syntax match Comment +\/\/.\+$+
 
-" Arduino/C++ specific configuration
-let g:ycm_global_ycm_extra_conf = '~/.ycm_global_extra_conf.py'
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_collect_identifiers_from_tags_files = 1
-" Always look for .ycm_extra_conf.py in project directories
-let g:ycm_extra_conf_vim_data = ['&filetype']
-
-nnoremap gd :YcmCompleter GoToDefinition<CR>
-
-let s:ycm_hover_popup = -1
-
-function s:MoreHover()
-    let response = youcompleteme#GetCommandResponse( 'GetDoc' )
-    if response == ''
-        let response = youcompleteme#GetCommandResponse('GetHover')
-    endif
-
-    if response == ''
-        execute 'normal! K'
-        return
-    endif
-
-    call popup_hide(s:ycm_hover_popup)
-    let s:ycm_hover_popup = popup_atcursor(balloon_split(response), {})
-endfunction
-
-nnoremap <silent> K :call <SID>MoreHover()<CR>
-
-" nnoremap <silent><Space> k :call <SID>GetDoc()<CR>
-nnoremap <Space>f :YcmCompleter Format<CR>
-xnoremap <Space>f :YcmCompleter Format<CR>
-set completeopt=menu,menuone,noselect
-
-let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_key_list_stop_completion = ['<C-m>']
-
-" Highlight all instances of word under cursor, when idle.
-" Useful when studying strange source code.
-" Type z/ to toggle highlighting on/off.
-nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
-function! AutoHighlightToggle()
-    let @/ = ''
-    if exists('#auto_highlight')
-        au! auto_highlight
-        augroup! auto_highlight
-        setl updatetime=4000
-        echo 'Highlight current word: off'
-        return 0
+nnoremap <silent> K :call ShowDocumentation()<CR>
+" Show hover when provider exists, fallback to vim's builtin behavior.
+function! ShowDocumentation()
+    if CocAction('hasProvider', 'hover')
+        try
+            call CocActionAsync('definitionHover')
+        catch
+            call CocActionAsync('doHover')
+        endtry
     else
-        augroup auto_highlight
-            au!
-            au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
-        augroup end
-        setl updatetime=10
-        echo 'Highlight current word: ON'
-        return 1
+        call feedkeys('K', 'in')
     endif
 endfunction
 
-let g:ycm_language_server = [
-  \ {
-  \   'name': 'php',
-  \   'cmdline': [ 'php', expand('~/.local/bin/phpactor'), 'language-server' ],
-  \   'filetypes': [ 'php' ]
-  \ },
-  \ {
-  \   'name': 'svelte',
-  \   'cmdline': [ 'svelteserver', '--stdio' ],
-  \   'filetypes': [ 'svelte' ],
-  \   'project_root_files': [ 'package.json', 'svelte.config.js', 'vite.config.js' ]
-  \ },
-\ ]
+" Use <C-m> (Enter) to confirm completion instead of <C-y>
+inoremap <silent><expr> <C-m> coc#pum#visible() ? coc#pum#confirm() : "\<C-m>"
+inoremap <expr> <cr> coc#pum#visible() ? coc#pum#select_confirm() : "\<CR>"
+
+"Trigger completion with <c-space>
+inoremap <silent><expr> <c-@> coc#refresh()
+
+autocmd CursorHold * call CocActionAsync('highlight')
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gD <Plug>(coc-declaration)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gu <Plug>(coc-references-used)
+
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format)
+
