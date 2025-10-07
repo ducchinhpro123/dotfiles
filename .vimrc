@@ -33,12 +33,8 @@ Plug 'mhinz/vim-startify'
 " Colorscheme
 Plug 'tpope/vim-vividchalk'
 
-"For Latex
-Plug 'lervag/vimtex'
-
 " Completion engine
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
 
 Plug 'leafOfTree/vim-svelte-plugin'
 
@@ -47,6 +43,12 @@ Plug 'peitalin/vim-jsx-typescript'
 
 " Display colors
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+
+" VIM MOTION
+Plug 'easymotion/vim-easymotion'
+
+Plug 'haya13busa/incsearch.vim'
+
 call plug#end()
 
 " =============================================================================
@@ -135,6 +137,27 @@ map gf :e <cfile><CR>
 
 " Return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" =============================================================================
+" VIM-EASYMOTION CONFIGURATION
+" =============================================================================
+nmap ts <Plug>(easymotion-overwin-f)
+nmap s <Plug>(easymotion-overwin-f2)
+
+" =============================================================================
+" INCSEARCH CONFIGURATION
+" =============================================================================
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
 
 " =============================================================================
 " APPEARANCE
@@ -354,7 +377,7 @@ let g:closetag_emptyTags_caseSensitive = 1
 
 
 " For gvim
-set guioptions -=m 
+set guioptions -=m
 set guioptions -=T
 
 " =============================================================================
@@ -367,9 +390,9 @@ nnoremap <silent> K :call ShowDocumentation()<CR>
 function! ShowDocumentation()
     if CocAction('hasProvider', 'hover')
         try
-            call CocActionAsync('definitionHover')
-        catch
             call CocActionAsync('doHover')
+        catch
+            call CocActionAsync('definitionHover')
         endtry
     else
         call feedkeys('K', 'in')
@@ -393,4 +416,3 @@ nmap <silent> gu <Plug>(coc-references-used)
 
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format)
-
