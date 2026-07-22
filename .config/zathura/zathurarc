@@ -1,0 +1,2 @@
+# Increase this value for faster scrolling, decrease it for finer control.
+set scroll-step 80

@@ -1,0 +1,62 @@
+# Local secrets and identity
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.gpg
+*.kdbx
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+known_hosts
+authorized_keys
+credentials*
+auth.json
+tokens.json
+
+# Shell/editor history and session state
+.*_history
+*.history
+*.session
+*.swp
+*.swo
+*~
+
+# Backups, caches, logs, databases, and runtime files
+*.bak
+*.backup
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.lock
+.cache/
+cache/
+logs/
+sessions/
+state/
+
+# Sensitive home-directory trees (defense in depth)
+/.ssh/
+/.gnupg/
+/.pki/
+/.local/share/keyrings/
+/.config/gh/
+/.config/google-chrome/
+/.config/chromium/
+/.config/microsoft-edge/
+/.config/mozilla/
+/.config/opera/
+/.config/expressvpn/
+/.config/nordvpn/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/
