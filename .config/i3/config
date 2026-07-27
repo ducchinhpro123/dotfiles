@@ -176,7 +176,8 @@ exec --no-startup-id "i3-msg 'workspace 1; exec kitty'"
 
 for_window [title="Calculator"] floating enable
 for_window [title="Timer"] floating enable
-for_window [class="^.*"] border pixel 1
+# Keep title bars on new windows, including floating dialogs and popups.
+for_window [class="^.*"] border normal
 for_window [class="librewolf"] border none
 for_window [class="firefox"] border none
 for_window [class="mpv"] floating enable
@@ -234,7 +235,7 @@ exec --no-startup-id ~/.config/i3/set-input.sh
 # Start with only the 2K display enabled
 exec --no-startup-id xrandr --output HDMI-0 --off --output DP-2 --primary --mode 2560x1440 --rate 164.96 --pos 0x0
 
-exec feh --bg-fill ~/.config/i3/wallpaper.png
+exec feh --bg-fill ~/Pictures/HL0nKKqakAAxZ2Z.jpg
 
 exec --no-startup-id dunst
 exec --no-startup-id redshift
