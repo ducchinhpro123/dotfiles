@@ -1,0 +1,3 @@
+# MCHOSE G3 V2 Pro (USB VID:PID 3837:4245)
+# Allow the active local desktop user to configure this mouse through WebHID.
+SUBSYSTEM=="hidraw", KERNEL=="hidraw*", ATTRS{idVendor}=="3837", ATTRS{idProduct}=="4245", TAG+="uaccess"
