@@ -34,3 +34,4 @@
 .config/rofi/config
 .config/rofi/config.rasi
 .config/zathura/zathurarc
+.omo/omo.jsonc

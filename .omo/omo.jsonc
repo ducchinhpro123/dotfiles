@@ -1,0 +1,120 @@
+// OMO configuration
+{
+  "[opencode]": {
+    "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
+    "telemetry": false,
+    "team_mode": {
+      "enabled": true,
+      "max_parallel_members": 4,
+      "max_members": 8,
+      "tmux_visualization": true
+    },
+    "agents": {
+      // Main orchestrator: decomposes goals, delegates to specialists, and drives work to completion.
+      "sisyphus": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "xhigh"
+      },
+      // Deep autonomous implementer: owns difficult coding tasks from investigation through validation.
+      "hephaestus": {
+        "model": "openai/gpt-5.6-sol",
+        "reasoning": "high"
+      },
+      // Architecture and debugging advisor: analyzes hard problems, risks, and high-impact tradeoffs.
+      "oracle": {
+        "model": "openai/gpt-5.6-sol",
+        "reasoning": "high"
+      },
+      // External researcher: finds official documentation, upstream code, packages, and prior art.
+      // Kimi K3: Omniscience +18.4 vs Luna's -11.2 — research must not hallucinate sources.
+      "librarian": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      },
+      // Fast codebase scout: locates files, symbols, patterns, dependencies, and execution paths.
+      // Luna high is 2x faster per task than max and still overqualified for grep-style work.
+      "explore": {
+        "model": "openai/gpt-5.6-luna",
+        "reasoning": "high"
+      },
+      // Visual analyst: inspects screenshots, images, PDFs, diagrams, and other multimodal input.
+      "multimodal-looker": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "low"
+      },
+      // Strategic planner: clarifies requirements and produces a decision-complete implementation plan.
+      "prometheus": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "xhigh"
+      },
+      // Pre-planning critic: exposes ambiguity, hidden assumptions, constraints, and missing questions.
+      "metis": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      },
+      // Plan reviewer: checks feasibility, completeness, precision, testability, and likely failure modes.
+      "momus": {
+        "model": "openai/gpt-5.6-sol",
+        "reasoning": "xhigh"
+      },
+      // Work coordinator: manages todo-driven execution and keeps delegated tasks synchronized.
+      "atlas": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      },
+      // Scoped executor: implements concrete tasks delegated by Sisyphus, Atlas, or category routing.
+      // Kimi K3: 2.2x cheaper per task than Sol for -3.9 coding points; leads AA-Briefcase long-horizon work.
+      "sisyphus-junior": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      }
+    },
+    "categories": {
+      // Frontend and UI engineering: components, interaction behavior, layout, styling, and UX polish.
+      "visual-engineering": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      },
+      // Maximum-depth reasoning: architecture, algorithms, subtle bugs, and complex technical decisions.
+      "ultrabrain": {
+        "model": "openai/gpt-5.6-sol",
+        "reasoning": "xhigh"
+      },
+      // Long-horizon implementation: autonomous investigation and substantial multi-file changes.
+      "deep": {
+        "model": "openai/gpt-5.6-sol",
+        "reasoning": "high"
+      },
+      // Creative and presentation-sensitive work requiring strong taste and polished execution.
+      // Kimi K3: frontier-adjacent coding at less than half of Sol's cost per task.
+      "artistry": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "high"
+      },
+      // Small, well-scoped work: typos, simple edits, lookups, and low-risk single-file changes.
+      // Luna low: trivial tasks never use max-effort headroom; low latency matters more here.
+      "quick": {
+        "model": "openai/gpt-5.6-luna",
+        "reasoning": "low"
+      },
+      // Routine delegated work with low ambiguity and limited reasoning requirements.
+      "unspecified-low": {
+        "model": "openai/gpt-5.6-luna",
+        "reasoning": "low"
+      },
+      // Ambiguous or demanding general work that benefits from broad context and careful synthesis.
+      "unspecified-high": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "xhigh"
+      },
+      // Documentation and prose: specifications, guides, summaries, explanations, and long-form writing.
+      "writing": {
+        "model": "cline-pass/cline-pass/kimi-k3",
+        "reasoning": "medium"
+      }
+    }
+  },
+  "_migrations": [
+    "2026-08-reasoning-unification"
+  ]
+}
