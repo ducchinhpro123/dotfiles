@@ -157,7 +157,10 @@ highlight diffRemoved guifg=#ff2222 ctermfg=1
 
 " Sign column and background
 highlight SignColumn guibg=#181818 ctermbg=234
-hi Normal guibg=NONE ctermbg=NONE
+highlight Normal guibg=NONE ctermbg=NONE
+highlight EndOfBuffer guibg=NONE ctermbg=NONE
+autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
+autocmd ColorScheme * highlight EndOfBuffer guibg=NONE ctermbg=NONE
 
 " Statusline
 set statusline=
