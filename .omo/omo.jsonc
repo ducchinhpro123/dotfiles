@@ -99,13 +99,14 @@
       },
       // Routine delegated work with low ambiguity and limited reasoning requirements.
       "unspecified-low": {
-        "model": "openai/gpt-5.6-luna",
+        "model": "cline-pass/cline-pass/deepseek-v4-flash",
         "reasoning": "low"
       },
       // Ambiguous or demanding general work that benefits from broad context and careful synthesis.
+      // DeepSeek V4 Flash: fast and decent for delegated grind work (subtitle pipelines etc.).
       "unspecified-high": {
-        "model": "cline-pass/cline-pass/kimi-k3",
-        "reasoning": "xhigh"
+        "model": "cline-pass/cline-pass/deepseek-v4-flash",
+        "reasoning": "medium"
       },
       // Documentation and prose: specifications, guides, summaries, explanations, and long-form writing.
       "writing": {
