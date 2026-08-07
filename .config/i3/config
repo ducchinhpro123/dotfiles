@@ -182,7 +182,7 @@ for_window [title="Timer"] floating enable, border normal 3
 # Keep title bars on new windows, including floating dialogs and popups.
 for_window [class="^.*"] border normal
 for_window [class="librewolf"] border none
-for_window [class="firefox"] border none
+# for_window [class="firefox"] border none
 for_window [window_type="dialog"] border normal 3
 for_window [class="mpv"] floating enable, border normal 3
 for_window [class="imv"] floating enable, border normal 3
